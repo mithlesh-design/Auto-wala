@@ -1,6 +1,6 @@
 /* ─────────────────────────────────────────────────────────────
    Auto Wala — Indian Auto Rickshaw Player
-   Daytime Highway Glassmorphic Theme ("Kalam" Font Logo Edition)
+   Daytime Highway Glassmorphic Theme ("Yatra One" Tagline Edition)
    ───────────────────────────────────────────────────────────── */
 
 :root {
@@ -20,6 +20,7 @@
   --body: "Hind", "Kohinoor Devanagari", "Nirmala UI", "Noto Sans Devanagari",
     ui-rounded, system-ui, sans-serif;
   --logo-font: "Kalam", cursive, sans-serif;
+  --tagline-font: "Yatra One", "Kalam", cursive, sans-serif;
   --ui: "Hind", ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
 
   --swift: 140ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -301,9 +302,9 @@ body {
 }
 
 .horn__deva {
-  font-family: var(--logo-font);
+  font-family: var(--tagline-font);
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #ffffff;
   text-shadow: none;
 }
@@ -376,7 +377,7 @@ body {
   gap: 0.65rem !important;
 }
 
-/* ── Bumper Stickers / Shayari (Centered) ─────────────────────── */
+/* ── Bumper Stickers / Shayari Tagline (Google Font "Yatra One") ── */
 
 .bumper {
   margin: 0 auto;
@@ -396,9 +397,9 @@ body {
 }
 
 .bumper__text {
-  font-family: var(--body);
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-family: var(--tagline-font);
+  font-size: 0.95rem;
+  font-weight: 400;
   color: #ffffff;
   text-shadow: none;
   white-space: nowrap;
