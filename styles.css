@@ -1,0 +1,760 @@
+/* ─────────────────────────────────────────────────────────────
+   Auto Wala — Indian Auto Rickshaw Player
+   Daytime Highway Glassmorphic Theme ("Kalam" Font Logo Edition)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  --logo-x: 0vw;
+  --logo-top: 6vh;
+  --logo-size: clamp(2.8rem, 8vw, 6.8rem);
+
+  --edge: clamp(1rem, 2.2vw, 1.75rem);
+  --glass: rgba(10, 24, 18, 0.68);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --shadow-glass: none;
+  --text-shadow: none;
+
+  --yellow-auto: #ffd000;
+  --green-auto: #049347;
+
+  --body: "Hind", "Kohinoor Devanagari", "Nirmala UI", "Noto Sans Devanagari",
+    ui-rounded, system-ui, sans-serif;
+  --logo-font: "Kalam", cursive, sans-serif;
+  --ui: "Hind", ui-sans-serif, -apple-system, "Segoe UI", system-ui, sans-serif;
+
+  --swift: 140ms cubic-bezier(0.4, 0, 0.2, 1);
+  --glide: 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  --settle: 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--body);
+  font-weight: 500;
+  color: #ffffff;
+  background: #68b4f8;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── Entrance Animations ─────────────────────────────────────── */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes rise-centered {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes rise-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-18px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+@keyframes blare {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.08) rotate(-3deg); filter: brightness(1.3); }
+  50% { transform: scale(0.96) rotate(3deg); }
+  75% { transform: scale(1.05); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translate(-50%, 0) rotate(0deg); }
+  15% { transform: translate(calc(-50% - 4px), 2px) rotate(-1.5deg); }
+  30% { transform: translate(calc(-50% + 4px), -2px) rotate(1.5deg); }
+  45% { transform: translate(calc(-50% - 3px), -1px) rotate(-1deg); }
+  60% { transform: translate(calc(-50% + 3px), 1px) rotate(1deg); }
+  75% { transform: translate(calc(-50% - 1px), 2px) rotate(-0.5deg); }
+}
+
+.topbar { animation: rise var(--settle) 0.28s both; }
+.logo { animation: rise-centered var(--settle) 0.06s both; }
+.dock { animation: rise-centered var(--settle) 0.16s both; }
+.horns { animation: rise-left var(--settle) 0.34s both; }
+
+/* ── Background & Road Canvas ───────────────────────────────── */
+
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: #68b4f8;
+}
+
+#roadCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.bg__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, transparent 22%, transparent 68%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none;
+}
+
+/* ── Topbar ─────────────────────────────────────────────────── */
+
+.topbar {
+  position: fixed;
+  top: var(--edge);
+  left: var(--edge);
+  right: var(--edge);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--ui);
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.clock {
+  padding: 0.35rem 0.75rem;
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  box-shadow: none;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+}
+
+.presence {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.85rem;
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  box-shadow: none;
+  color: #ffffff;
+}
+
+.presence__dot {
+  width: 7px;
+  height: 7px;
+  background: #00ff88;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+.presence__count {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.presence__label {
+  opacity: 0.95;
+  color: #ffffff;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  color: #ffffff;
+  text-decoration: none;
+  box-shadow: none;
+  transition: transform var(--swift), background var(--swift);
+}
+
+.link:hover {
+  transform: scale(1.08);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Horn Button ────────────────────────────────────────────── */
+
+.horns {
+  position: fixed;
+  top: calc(var(--edge) + 3.2rem);
+  left: var(--edge);
+  z-index: 25;
+}
+
+.horn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.95rem;
+  background: linear-gradient(135deg, rgba(255, 208, 0, 0.35) 0%, rgba(4, 147, 71, 0.45) 100%), var(--glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: none;
+  transition: transform var(--swift), border-color var(--swift);
+}
+
+.horn:hover {
+  transform: translateY(-2px) scale(1.03);
+  border-color: #ffffff;
+}
+
+.horn:active,
+.horn.is-blaring {
+  animation: blare 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  border-color: #ffffff;
+  background: linear-gradient(135deg, rgba(255, 208, 0, 0.65) 0%, rgba(4, 147, 71, 0.75) 100%);
+}
+
+.horn__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.horn__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+
+.horn__deva {
+  font-family: var(--logo-font);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: none;
+}
+
+.horn__en {
+  font-family: var(--ui);
+  font-size: 0.65rem;
+  opacity: 0.95;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* ── Single-Line Wordmark Logo (Google Font "Kalam") ────────── */
+
+.logo {
+  position: fixed;
+  top: var(--logo-top);
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0;
+  width: max-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--logo-font);
+  font-size: var(--logo-size);
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: none;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.logo__line {
+  font-family: var(--logo-font);
+  font-weight: 700;
+  color: #ffffff;
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: #ffffff;
+  filter: none;
+  text-shadow: none;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.logo.is-shaking {
+  animation: shake 0.6s ease-in-out both;
+}
+
+/* ── Dock Container (Dead Centered Horizontally) ───────────────── */
+
+.dock {
+  position: fixed !important;
+  bottom: clamp(1.2rem, 3.5vh, 2.5rem) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin: 0 !important;
+  width: min(90vw, 500px) !important;
+  z-index: 30 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.65rem !important;
+}
+
+/* ── Bumper Stickers / Shayari (Centered) ─────────────────────── */
+
+.bumper {
+  margin: 0 auto;
+  padding: 0.45rem 1rem;
+  background: rgba(10, 20, 15, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: none;
+  max-width: 100%;
+  text-align: center;
+}
+
+.bumper__text {
+  font-family: var(--body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.bumper__text.is-swapping {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.bumper__next {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  border-radius: 50%;
+  transition: transform var(--swift), color var(--swift);
+}
+
+.bumper__next:hover {
+  color: #ffffff;
+  transform: rotate(90deg);
+}
+
+/* ── Player Glass Card (Centered) ──────────────────────────── */
+
+.player {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  background: var(--glass);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: none;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  transition: transform var(--glide);
+}
+
+/* Disc Artwork */
+.disc {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #111;
+  box-shadow: none;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.disc__ring {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: spin 12s linear infinite;
+  animation-play-state: paused;
+}
+
+.player.is-playing .disc__ring {
+  animation-play-state: running;
+}
+
+.disc__art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.disc__hub {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #222 30%, #444 70%, #111 100%);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: none;
+}
+
+/* Metadata & Scrubber */
+.meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 0.15rem;
+}
+
+.meta__title {
+  margin: 0;
+  font-family: var(--body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+  transition: opacity 0.2s ease;
+}
+
+.player.is-swapping .meta__title {
+  opacity: 0.2;
+}
+
+.meta__artist {
+  margin: 0;
+  font-family: var(--ui);
+  font-size: 0.725rem;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.seek {
+  position: relative;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-top: 0.25rem;
+  touch-action: none;
+}
+
+.seek__rail {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.seek__fill {
+  height: 100%;
+  width: 100%;
+  background: #ffffff;
+  transform-origin: left center;
+  transform: scaleX(0);
+  border-radius: 999px;
+}
+
+.seek__knob {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: none;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.time {
+  font-family: var(--ui);
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: right;
+  margin-top: -0.1rem;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform var(--swift), background var(--swift), color var(--swift);
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.btn--play {
+  width: 42px;
+  height: 42px;
+  background: #ffffff;
+  color: #08100d;
+  box-shadow: none;
+}
+
+.btn--play:hover {
+  background: #ffffff;
+  color: #000000;
+  transform: scale(1.06);
+}
+
+.btn--play .i-pause { display: none; }
+.player.is-playing .btn--play .i-play { display: none; }
+.player.is-playing .btn--play .i-pause { display: block; }
+
+.btn--toggle.is-on {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Playlist Drawer Popup ─────────────────────────────────── */
+
+.list {
+  position: absolute;
+  bottom: calc(100% + 0.65rem);
+  left: 0;
+  right: 0;
+  max-height: 320px;
+  background: rgba(10, 20, 15, 0.94);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: none;
+  overflow-y: auto;
+  padding: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.98);
+  transition: opacity var(--glide), transform var(--glide), visibility var(--glide);
+  z-index: 40;
+}
+
+.list.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.list::-webkit-scrollbar {
+  width: 5px;
+}
+.list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.list ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.list li button {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--swift);
+}
+
+.list li button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.list li.is-current button {
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.t-title {
+  font-family: var(--body);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+}
+
+.list li.is-current .t-title {
+  color: #ffffff;
+}
+
+.t-artist {
+  font-family: var(--ui);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ── Responsive adjustments ────────────────────────────────── */
+
+@media (max-width: 480px) {
+  :root {
+    --logo-top: 8vh;
+    --logo-size: clamp(2.2rem, 9.5vw, 3.8rem);
+  }
+
+  .topbar {
+    font-size: 0.75rem;
+  }
+
+  .presence__label {
+    display: none;
+  }
+
+  .horns {
+    top: calc(var(--edge) + 2.8rem);
+  }
+
+  .horn__en {
+    display: none;
+  }
+
+  .player {
+    gap: 0.75rem;
+    padding: 0.85rem;
+  }
+
+  .disc {
+    width: 50px;
+    height: 50px;
+  }
+}
